@@ -4,11 +4,19 @@ import bodyParser from "body-parser";
 import OpenAI from "openai";
 
 const app = express();
-app.use(cors());
+
+// Allow all origins so Roblox can call your API
+app.use(cors({ origin: "*" }));
 app.use(bodyParser.json());
 
 const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
+// Test endpoint to check if Roblox can reach the server
+app.get("/test", (req, res) => {
+  res.send("API is reachable!");
+});
+
+// Main AI endpoint
 app.post("/ask", async (req, res) => {
   const { prompt } = req.body;
   if (!prompt) return res.status(400).json({ error: "No prompt provided" });
